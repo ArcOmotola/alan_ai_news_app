@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import alanBtn from '@alan-ai/alan-sdk-web';
 import NewsCards from './components/NewsCards/NewsCards';
+import useStyles from './styles';
 
 const alanKey = 'd59d94041d6988171e0249854279c8472e956eca572e1d8b807a3e2338fdd0dc/stage';
 
 export default function App() {
     const [newsArticles, setNewsArticles] = useState([]);
+    const [activeArticle, setActiveArticle] = useState(-1); 
+    const classes = useStyles();
 
     useEffect(() => {
         alanBtn({
@@ -13,6 +16,9 @@ export default function App() {
             onCommand: ({ command, articles }) => {
                 if(command === 'newHeadlines') {
                     setNewsArticles(articles);
+                    setActiveArticle(-1);
+                } else if (command === 'highlight') {
+                    setActiveArticle((prevActiveArticle) => prevActiveArticle + 1);
                 }
             }
         })
@@ -20,8 +26,10 @@ export default function App() {
 
     return (
         <div>
-            <h1>Alan AI News Application</h1>
-            <NewsCards articles={newsArticles}/>
+            <div className={classes.logoContainer}>
+                <img src="https://voicebot.ai/wp-content/uploads/2019/10/alan.jpg" className={classes.alanLogo}  alt="alan Logo"/>
+            </div>
+            <NewsCards articles={newsArticles} activeArticle={activeArticle}/>
         </div>
     )
 }
